@@ -41,7 +41,7 @@ function MainSvg({}: Props) {
             circle.setAttribute('cy', target.getAttribute('cy'));
             circle.setAttribute('r', target.getAttribute('r'));
             circle.setAttribute('class', 'circle');
-            // circle.setAttribute('fill', 'black');
+            circle.setAttribute('fill', 'rgb(229, 231, 214)');
             newElements.push(circle);
         }
         
