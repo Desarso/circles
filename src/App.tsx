@@ -5,7 +5,10 @@ import '../css/style.css'
 
 const App: Component = () => {
   return (
+    <div class='app-container'>
       <MainSvg/>
+    </div>
+      
   );
 };
 

@@ -1,6 +1,6 @@
 import { onMount } from 'solid-js';
 import { For } from 'solid-js/web';
-import Cat from '../images/cat_400x400.jpg';
+import Cat from '../images/puppy_1_400x400.jpg';
 import { createSignal } from 'solid-js';
 
 type Props = {}
@@ -22,7 +22,8 @@ function MainSvg({}: Props) {
 
 
     async function replaceWithFour(e: any) {
-        if(e.target.getAttribute('r') < 3) return;
+        let shape = "circle";
+        if(e.target.getAttribute('r') <= 3) { return};
         let classes = ["top-left", "top-right", "bottom-left", "bottom-right"];
         let parentElement = e.target.parentElement;
         let currentElement = e.target;
@@ -97,7 +98,7 @@ function MainSvg({}: Props) {
 
 
     onMount(async () => {
-        await delay(10);
+        await delay(1000);
         canvas = document.querySelector('canvas');
         img = document.querySelector('img');
         canvas.width = 800;
@@ -109,7 +110,7 @@ function MainSvg({}: Props) {
         console.log(img);
         console.log(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
         setColor(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
-
+        if(pixel.data[3] === 0) location.reload();
     });
 
     function getColorFromXY(x : number, y : number) {
@@ -123,17 +124,7 @@ function MainSvg({}: Props) {
 
   return (
     <div class='dots'>
-        <svg width={800} height={800}>
-            {/* <For each={number}>
-                {(item, hindex) => (\jobs\companies
-                      <For each={number}>{
-                        (i, index) => (
-                            <circle cx={20+(index()*40)} cy={20+(hindex()*40)} r="20" fill='black' />
-                        )
-                    }
-                    </For>
-                )}
-            </For> */}
+        <svg>
              <circle id={`dot${globalIndex++}`}
              cx={400} cy={400} r="400" fill={color()}
              onPointerEnter={(e) => replaceWithFour(e)}
