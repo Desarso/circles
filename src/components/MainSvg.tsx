@@ -16,7 +16,10 @@ function MainSvg({}: Props) {
     let [height, setHeight] = createSignal(0);
     let [radious, setRadious] = createSignal(0);
     let [yoffset, setYoffset] = createSignal(0);
+    let [xoffset, setXoffset] = createSignal(0);
     let ctx : any;
+    let [canSplit, setCanSplit] = createSignal(true);
+    let previousX = -1000;
 
 
     const delay = (delayInms: number) => {
@@ -25,7 +28,7 @@ function MainSvg({}: Props) {
 
 
 
-    async function replaceWithFour(target: any) {
+    async function replaceWithFour(target: any, previous : any) {
         let shape = "circle";
         if(target.getAttribute('r') < 1) { return};
         let classes = ["top-left", "top-right", "bottom-left", "bottom-right"];
@@ -59,51 +62,58 @@ function MainSvg({}: Props) {
         }
 
         
-        await delay(1);
+        await delay(10);
         for(let i = 0; i < 4; i++) {
             if(i === 0){
                 await newElements[i].setAttribute('cx', (+currentCx - +halfCurrentR).toString());
                 await newElements[i].setAttribute('cy', (+currentCy - +halfCurrentR).toString());
                 await newElements[i].setAttribute('r', (currentR/ 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR, +currentCy - +halfCurrentR - yoffset()));
+                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR - xoffset(), +currentCy - +halfCurrentR - yoffset()));
             }
             if(i===1){
                 await newElements[i].setAttribute('cx', (+halfCurrentR + +currentCx).toString());
                 await newElements[i].setAttribute('cy', (+currentCy - +halfCurrentR).toString());
                 await newElements[i].setAttribute('r', (currentR / 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx, +currentCy - +halfCurrentR - yoffset()));
+                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx  - xoffset(), +currentCy - +halfCurrentR - yoffset()));
             }
             if(i===2){
                 await newElements[i].setAttribute('cx', (+currentCx - +halfCurrentR).toString());
                 await newElements[i].setAttribute('cy', (+halfCurrentR + +currentCy).toString());
                 await newElements[i].setAttribute('r', (currentR / 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR, +halfCurrentR + +currentCy - yoffset()));
+                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR  - xoffset(), +halfCurrentR + +currentCy - yoffset()));
             }
             if(i===3){
                 await newElements[i].setAttribute('cx', (+halfCurrentR + +currentCx).toString());
                 await newElements[i].setAttribute('cy', (+halfCurrentR + +currentCy).toString());
                 await newElements[i].setAttribute('r', (currentR / 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx, +halfCurrentR + +currentCy - yoffset()));
+                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx  - xoffset(), +halfCurrentR + +currentCy - yoffset()));
             }
           
         }
 
-
+        await delay(100)
         for(let i = 0; i < 4; i++) {
-            await delay(.1);
-            // newElements[i].addEventListener('pointerenter', (e) => {
-            //     replaceWithFour(e);
-            //   })
+            newElements[i].addEventListener('pointerenter', async(e) => {
+                await delay(1);
+                await replaceWithFour(e.target, "none");
+              })
             newElements[i].addEventListener('touchmove', async (e) => {
                 let x = e.touches[0].clientX;
                 let y = e.touches[0].clientY;
-                console.log(e.target);
                 let newElement = document.elementFromPoint(x, y);
-                // if(newElement === e.target)return;
 
-                await delay(10);
-                await replaceWithFour(newElement);
-
+                console.log(newElement?.nodeName);
+                
+                if(newElement?.nodeName === "circle" && canSplit() === true) {
+                    setCanSplit(false);
+                    await delay(11)
+                    await replaceWithFour(newElement, previous);
+                    setCanSplit(false);
+                }else if(canSplit() === false && newElement?.nodeName === 'svg') {
+                    setCanSplit(true);
+                }else{
+                    return;
+                }
               })
         }
 
@@ -114,12 +124,13 @@ function MainSvg({}: Props) {
 
     onMount(async () => {
         await delay(100);
-        console.log(innerHeight);
-        console.log(innerWidth);
+        // console.log(innerHeight);
+        // console.log(innerWidth);
       
         let newR = innerWidth > innerHeight ? innerHeight / 2 : innerWidth / 2;
         setRadious(newR);
         setYoffset(innerHeight / 2 - radious());
+        setXoffset(innerWidth / 2 - radious());
         setWidth(innerWidth/2);
         setHeight(innerHeight/2);
         canvas = document.querySelector('canvas');
@@ -139,7 +150,7 @@ function MainSvg({}: Props) {
     function getColorFromXY(x : number, y : number) {
         let pixel = ctx.getImageData(x, y, 1, 1);
         let color = `rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]})`;
-        console.log(color);
+        // console.log(color);
         return color;
     }
 
@@ -150,7 +161,8 @@ function MainSvg({}: Props) {
         <svg>
              <circle id={`dot${globalIndex++}`}
              cx={width()} cy={height()} r={radious()} fill={color()}
-             onPointerEnter={(e) => replaceWithFour(e.target)}
+             onPointerEnter={(e) => replaceWithFour(e.target, "none")}
+             onTouchStart={(e) => {replaceWithFour(e.target, "none")}}
              />
           
             
