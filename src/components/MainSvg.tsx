@@ -91,7 +91,7 @@ function MainSvg({}: Props) {
           
         }
 
-        await delay(1)
+        await delay(100)
         for(let i = 0; i < 4; i++) {
             newElements[i].addEventListener('pointerenter', async(e) => {
                 await delay(1);
