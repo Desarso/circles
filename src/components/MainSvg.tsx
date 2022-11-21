@@ -12,6 +12,10 @@ function MainSvg({}: Props) {
     let [color, setColor] = createSignal('black');
     let canvas;
     let img;
+    let [width, setWidth] = createSignal(0);
+    let [height, setHeight] = createSignal(0);
+    let [radious, setRadious] = createSignal(0);
+    let [yoffset, setYoffset] = createSignal(0);
     let ctx : any;
 
 
@@ -23,7 +27,7 @@ function MainSvg({}: Props) {
 
     async function replaceWithFour(e: any) {
         let shape = "circle";
-        if(e.target.getAttribute('r') <= 3) { return};
+        if(e.target.getAttribute('r') < 1) { return};
         let classes = ["top-left", "top-right", "bottom-left", "bottom-right"];
         let parentElement = e.target.parentElement;
         let currentElement = e.target;
@@ -61,25 +65,25 @@ function MainSvg({}: Props) {
                 await newElements[i].setAttribute('cx', (+currentCx - +halfCurrentR).toString());
                 await newElements[i].setAttribute('cy', (+currentCy - +halfCurrentR).toString());
                 await newElements[i].setAttribute('r', (currentR/ 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR, +currentCy - +halfCurrentR));
+                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR, +currentCy - +halfCurrentR - yoffset()));
             }
             if(i===1){
                 await newElements[i].setAttribute('cx', (+halfCurrentR + +currentCx).toString());
                 await newElements[i].setAttribute('cy', (+currentCy - +halfCurrentR).toString());
                 await newElements[i].setAttribute('r', (currentR / 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx, +currentCy - +halfCurrentR));
+                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx, +currentCy - +halfCurrentR - yoffset()));
             }
             if(i===2){
                 await newElements[i].setAttribute('cx', (+currentCx - +halfCurrentR).toString());
                 await newElements[i].setAttribute('cy', (+halfCurrentR + +currentCy).toString());
                 await newElements[i].setAttribute('r', (currentR / 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR, +halfCurrentR + +currentCy));
+                await newElements[i].setAttribute('fill', getColorFromXY(+currentCx - +halfCurrentR, +halfCurrentR + +currentCy - yoffset()));
             }
             if(i===3){
                 await newElements[i].setAttribute('cx', (+halfCurrentR + +currentCx).toString());
                 await newElements[i].setAttribute('cy', (+halfCurrentR + +currentCy).toString());
                 await newElements[i].setAttribute('r', (currentR / 2).toString());
-                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx, +halfCurrentR + +currentCy));
+                await newElements[i].setAttribute('fill', getColorFromXY(+halfCurrentR + +currentCx, +halfCurrentR + +currentCy - yoffset()));
             }
           
         }
@@ -98,19 +102,27 @@ function MainSvg({}: Props) {
 
 
     onMount(async () => {
-        await delay(10);
+        await delay(100);
+        console.log(innerHeight);
+        console.log(innerWidth);
+      
+        let newR = innerWidth > innerHeight ? innerHeight / 2 : innerWidth / 2;
+        setRadious(newR);
+        setYoffset(innerHeight / 2 - radious());
+        setWidth(innerWidth/2);
+        setHeight(innerHeight/2);
         canvas = document.querySelector('canvas');
-        img = document.querySelector('img');
-        canvas.width = 800;
-        canvas.height = 800;
+        img = document.querySelector('img');                                                                                            
+        canvas.width = newR*2;
+        canvas.height = newR*2;
         ctx = canvas.getContext('2d',{willReadFrequently: true} );
-        ctx.drawImage(img, 0, 0, 800, 800);
+        ctx.drawImage(img, 0, 0, newR*2, newR*2);
 
         let pixel = ctx.getImageData(100, 100, 1, 1);
-        console.log(img);
-        console.log(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
+        // console.log(img);
+        // console.log(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
         setColor(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
-        if(pixel.data[3] === 0) location.reload();
+        // if(pixel.data[3] === 0) location.reload();
     });
 
     function getColorFromXY(x : number, y : number) {
@@ -126,7 +138,7 @@ function MainSvg({}: Props) {
     <div class='dots'>
         <svg>
              <circle id={`dot${globalIndex++}`}
-             cx={400} cy={400} r="400" fill={color()}
+             cx={width()} cy={height()} r={radious()} fill={color()}
              onPointerEnter={(e) => replaceWithFour(e)}
              />
           
