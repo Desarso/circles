@@ -25,33 +25,33 @@ function MainSvg({}: Props) {
 
 
 
-    async function replaceWithFour(e: any) {
+    async function replaceWithFour(target: any) {
         let shape = "circle";
-        if(e.target.getAttribute('r') < 1) { return};
+        if(target.getAttribute('r') < 1) { return};
         let classes = ["top-left", "top-right", "bottom-left", "bottom-right"];
-        let parentElement = e.target.parentElement;
-        let currentElement = e.target;
+        let parentElement = target.parentElement;
+        let currentElement = target;
         let newElements = [];
         for(let i = 0; i < 4; i++) {
             let circle = document.createElementNS("http://www.w3.org/2000/svg",'circle');
-            circle.setAttribute('cx', e.target.getAttribute('cx'));
-            circle.setAttribute('cy', e.target.getAttribute('cy'));
-            circle.setAttribute('r', e.target.getAttribute('r'));
+            circle.setAttribute('cx', target.getAttribute('cx'));
+            circle.setAttribute('cy', target.getAttribute('cy'));
+            circle.setAttribute('r', target.getAttribute('r'));
             circle.setAttribute('class', 'circle');
             // circle.setAttribute('fill', 'black');
             newElements.push(circle);
         }
         
-        let currentCx : number = e.target.getAttribute('cx');
-        let currentCy : number = e.target.getAttribute('cy');
-        let currentR : number = e.target.getAttribute('r');
+        let currentCx : number = target.getAttribute('cx');
+        let currentCy : number = target.getAttribute('cy');
+        let currentR : number = target.getAttribute('r');
         let halfCurrentCx : number = currentCx / 2;
         let halfCurrentCy : number = currentCy / 2;
         let halfCurrentR : number = currentR / 2;
       
 
         // console.log(newElements[0]);
-        e.target.remove();
+        target.remove();
         // parentElement.appendChild(newElements[0]);
         for(let i = 0; i < 4; i++) {
             await parentElement.appendChild(newElements[i]);
@@ -91,8 +91,19 @@ function MainSvg({}: Props) {
 
         for(let i = 0; i < 4; i++) {
             await delay(.1);
-            newElements[i].addEventListener('pointerenter', (e) => {
-                replaceWithFour(e);
+            // newElements[i].addEventListener('pointerenter', (e) => {
+            //     replaceWithFour(e);
+            //   })
+            newElements[i].addEventListener('touchmove', async (e) => {
+                let x = e.touches[0].clientX;
+                let y = e.touches[0].clientY;
+                console.log(e.target);
+                let newElement = document.elementFromPoint(x, y);
+                // if(newElement === e.target)return;
+
+                await delay(10);
+                await replaceWithFour(newElement);
+
               })
         }
 
@@ -139,7 +150,7 @@ function MainSvg({}: Props) {
         <svg>
              <circle id={`dot${globalIndex++}`}
              cx={width()} cy={height()} r={radious()} fill={color()}
-             onPointerEnter={(e) => replaceWithFour(e)}
+             onPointerEnter={(e) => replaceWithFour(e.target)}
              />
           
             
