@@ -91,7 +91,7 @@ function MainSvg({}: Props) {
           
         }
 
-        await delay(100)
+        await delay(10)
         for(let i = 0; i < 4; i++) {
             newElements[i].addEventListener('pointerenter', async(e) => {
                 await delay(1);
@@ -126,6 +126,8 @@ function MainSvg({}: Props) {
         await delay(100);
         // console.log(innerHeight);
         // console.log(innerWidth);
+        // let innerHeight = 2000;
+        // let innerWidth = 2000;
       
         let newR = innerWidth > innerHeight ? innerHeight / 2 : innerWidth / 2;
         setRadious(newR);
