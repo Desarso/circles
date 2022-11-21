@@ -62,7 +62,7 @@ function MainSvg({}: Props) {
         }
 
         
-        await delay(10);
+        await delay(5);
         for(let i = 0; i < 4; i++) {
             if(i === 0){
                 await newElements[i].setAttribute('cx', (+currentCx - +halfCurrentR).toString());
@@ -91,7 +91,7 @@ function MainSvg({}: Props) {
           
         }
 
-        await delay(100)
+        await delay(1)
         for(let i = 0; i < 4; i++) {
             newElements[i].addEventListener('pointerenter', async(e) => {
                 await delay(1);
@@ -106,7 +106,7 @@ function MainSvg({}: Props) {
                 
                 if(newElement?.nodeName === "circle" && canSplit() === true) {
                     setCanSplit(false);
-                    await delay(11)
+                    await delay(6)
                     await replaceWithFour(newElement, previous);
                     setCanSplit(false);
                 }else if(canSplit() === false && newElement?.nodeName === 'svg') {
