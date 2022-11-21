@@ -86,7 +86,7 @@ function MainSvg({}: Props) {
 
 
         for(let i = 0; i < 4; i++) {
-            await delay(100);
+            await delay(.1);
             newElements[i].addEventListener('pointerenter', (e) => {
                 replaceWithFour(e);
               })
@@ -98,7 +98,7 @@ function MainSvg({}: Props) {
 
 
     onMount(async () => {
-        await delay(100);
+        await delay(10);
         canvas = document.querySelector('canvas');
         img = document.querySelector('img');
         canvas.width = 800;
