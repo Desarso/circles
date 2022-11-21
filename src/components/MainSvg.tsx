@@ -98,7 +98,7 @@ function MainSvg({}: Props) {
 
 
     onMount(async () => {
-        await delay(1000);
+        await delay(100);
         canvas = document.querySelector('canvas');
         img = document.querySelector('img');
         canvas.width = 800;
