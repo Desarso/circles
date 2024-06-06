@@ -1,0 +1,4 @@
+I want to refactor the app to use canvas instead of svg for speed. It would also be nice to use webgl it possible for extra learning.
+
+I just want to figure out the current mouse position in real time. 
+

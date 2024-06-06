@@ -95,7 +95,7 @@ function MainSvg({}: Props) {
         for(let i = 0; i < 4; i++) {
             newElements[i].addEventListener('pointerenter', async(e) => {
                 await delay(1);
-                await replaceWithFour(e.target, "none");
+                await replaceWithFour(e.target, previous);
               })
             newElements[i].addEventListener('touchmove', async (e) => {
                 let x = e.touches[0].clientX;
@@ -147,6 +147,12 @@ function MainSvg({}: Props) {
         // console.log(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
         setColor(`rgb(${pixel.data[0]}, ${pixel.data[1]}, ${pixel.data[2]}, ${pixel.data[3]})`);
         // if(pixel.data[3] === 0) location.reload();
+
+        //add and event lister for touch and for hover
+
+        
+
+
     });
 
     function getColorFromXY(x : number, y : number) {
@@ -165,6 +171,7 @@ function MainSvg({}: Props) {
              cx={width()} cy={height()} r={radious()} fill={color()}
              onPointerEnter={(e) => replaceWithFour(e.target, "none")}
              onTouchStart={(e) => {replaceWithFour(e.target, "none")}}
+             onMouseEnter={(e) => {replaceWithFour(e.target, "none")}}
              />
           
             
