@@ -23,8 +23,7 @@ function Circle({}: Props) {
     });
 
     async function fetchAndProcessImage() {
-        const host = "https://cors-anywhere.herokuapp.com/"
-        const catapi= host+"https://api.thecatapi.com/v1/images/search"
+        const catapi = 'https://corsproxy.io/?' + encodeURIComponent('https://api.thecatapi.com/v1/images/search')
         let url = "";
         await fetch(
             catapi
@@ -33,7 +32,7 @@ function Circle({}: Props) {
         .then(data => {
             url = data[0].url;
         })
-        const response = await fetch(host+url);
+        const response = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
         const blob = await response.blob();
         const image = await createImageBitmap(blob);
     
