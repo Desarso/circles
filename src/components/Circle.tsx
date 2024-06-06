@@ -8,8 +8,7 @@ type Props = {}
 
 function Circle({}: Props) {
     
-    const host = "https://cors-anywhere.herokuapp.com/"
-    const catapi= host+"https://api.thecatapi.com/v1/images/search"
+
   
     onMount(async () => {
         let canvas = document.querySelector('canvas') as HTMLCanvasElement;
@@ -24,6 +23,8 @@ function Circle({}: Props) {
     });
 
     async function fetchAndProcessImage() {
+        const host = "https://cors-anywhere.herokuapp.com/"
+        const catapi= host+"https://api.thecatapi.com/v1/images/search"
         let url = "";
         await fetch(
             catapi

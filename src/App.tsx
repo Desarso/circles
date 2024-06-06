@@ -8,8 +8,9 @@ import RandomPic from './components/RandomPic';
 const App: Component = () => {
   return (
     <div class='app-container'>
-      <Circle/>
+      {/* <Circle/> */}
       {/* <RandomPic/> */}
+      <MainSvg/>
     </div>
       
   );

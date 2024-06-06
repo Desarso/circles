@@ -2,7 +2,7 @@ import { Component, createSignal, onMount } from "solid-js";
 
 const RandomPic: Component<{}> = (props) => {
 
-    const catapi= "https://api.thecatapi.com/v1/images/search"
+
 
     onMount(async () => {
         //fetch images from the cat api
@@ -10,6 +10,7 @@ const RandomPic: Component<{}> = (props) => {
     });
 
     async function fetchAndProcessImage() {
+        const catapi= "https://api.thecatapi.com/v1/images/search"
         let url = "";
         await fetch(catapi)
         .then(response => response.json())
