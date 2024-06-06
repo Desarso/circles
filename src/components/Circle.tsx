@@ -23,13 +23,16 @@ function Circle({}: Props) {
     });
 
     async function fetchAndProcessImage() {
-        const catapi = 'https://corsproxy.io/?' + encodeURIComponent('https://api.thecatapi.com/v1/images/search')
+        //`https://api.allorigins.win/get?url=${encodeURIComponent('https://api.thecatapi.com/v1/images/search')}`
+        const catapi =  `https://api.allorigins.win/get?url=${encodeURIComponent('https://api.thecatapi.com/v1/images/search')}`
+        console.log(catapi);
         let url = "";
         await fetch(
             catapi
         )
         .then(response => response.json())
         .then(data => {
+            data = JSON.parse(data.contents);
             url = data[0].url;
         })
         const response = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
