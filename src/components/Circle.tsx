@@ -41,8 +41,8 @@ function Circle({}: Props) {
     
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 500;
-        canvas.height = 500;
+        canvas.width = 4000;
+        canvas.height = 4000;
     
         let startX, startY, sideLength;
         if (image.width > image.height) {
@@ -55,7 +55,7 @@ function Circle({}: Props) {
             startY = (image.height - sideLength) / 2;
         }
     
-        ctx.drawImage(image, startX, startY, sideLength, sideLength, 0, 0, 500, 500);
+        ctx.drawImage(image, startX, startY, sideLength, sideLength, 0, 0, 4000, 4000);
         const dataURL = canvas.toDataURL();
         const resultImage = document.createElement('img');
         resultImage.src = dataURL;
@@ -120,7 +120,7 @@ function Circle({}: Props) {
         <div class="upload">
             Upload
         </div>
-        <canvas class= "noDispla">
+        <canvas>
         
          </canvas>
     </div>

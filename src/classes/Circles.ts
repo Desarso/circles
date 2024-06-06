@@ -307,7 +307,7 @@ export class Circles {
     if (this.disabled) return;
     //min radius is 0.1
 
-    if (circle.radius <= 0.002) {
+    if (circle.radius <= 0.004) {
       return;
     }
 
