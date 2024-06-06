@@ -1,45 +1,52 @@
-html, body, #root{
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    background-color: black;
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: black;
 }
 
-
-.dots{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.dots {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-
-.circle{
-    transition-duration: 200ms;
+.upload {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  cursor: pointer;
+  //style like a nice button
+  background-color: rgb(26, 175, 175);
+  padding: 5px;
+  border: 1px solid rgb(26, 175, 175);
+  border-radius: 5px;
 }
 
-.noDisplay{
-    display: none;
+.circle {
+  transition-duration: 200ms;
 }
 
-.app-container{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.noDisplay {
+  display: none;
 }
 
-
-
-
-svg{
-    background-color: black;
-    width: 100%;
-    height: 100%;
+.app-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-
-
-
+svg {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+}

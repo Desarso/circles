@@ -119,7 +119,8 @@ class Circle {
 //we're gonna use absolute coordinates for the circles
 //so the canvas is always a square from -1 to 1 the coords are normalized, then transformed to the canvas size
 export class Circles {
-    circles: Circle[] = [];
+
+  circles: Circle[] = [];
   canvas: HTMLCanvasElement;
   pictureCanvas: HTMLCanvasElement;
   image: HTMLImageElement;
@@ -285,6 +286,9 @@ export class Circles {
 
     
   }
+
+
+  
 
  
 

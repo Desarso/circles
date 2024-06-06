@@ -13,6 +13,11 @@ function Circle({}: Props) {
         let canvas = document.querySelector('canvas') as HTMLCanvasElement;
         let img = await fetchAndProcessImage() as HTMLImageElement;
         let main = new Circles(canvas, img);
+        
+        let upload = document.querySelector('.upload') as HTMLDivElement;
+        upload.addEventListener('click', () => {
+            handleImageUpload();
+        });
     
 
     });
@@ -56,10 +61,58 @@ function Circle({}: Props) {
     }
 
 
+    async function handleImageUpload() {
+        //prompt user to upload image
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.click();
+        //turn the image into an image element
+
+        input.addEventListener('change', async () => {
+            let file = input.files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                let img = new Image();
+                img.src = reader.result as string;
+                img.onload = () => {
+                    let canvas = document.querySelector('canvas') as HTMLCanvasElement;
+                    let ctx = canvas.getContext('2d');
+                    canvas.width = 500;
+                    canvas.height = 500;
+                    let startX, startY, sideLength;
+                    if (img.width > img.height) {
+                        sideLength = img.height;
+                        startX = (img.width - sideLength) / 2;
+                        startY = 0;
+                    } else {
+                        sideLength = img.width;
+                        startX = 0;
+                        startY = (img.height - sideLength) / 2;
+                    }
+                    ctx.drawImage(img, startX, startY, sideLength, sideLength, 0, 0, 500, 500);
+                    const dataURL = canvas.toDataURL();
+                    const resultImage = document.createElement('img');
+                    resultImage.src = dataURL;
+                    let main = new Circles(canvas, resultImage);
+                }
+            }
+        });
+
+
+    }
+
+
+
+
+
 
   return (
     <div class='dots'>
-        <img src={Cat} class="noDisplay"></img>
+        <div class="upload">
+            Upload
+        </div>
         <canvas class= "noDispla">
         
          </canvas>
