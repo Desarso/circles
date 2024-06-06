@@ -9,14 +9,14 @@ type Props = {}
 function Circle({}: Props) {
     
     const catapi= "https://api.thecatapi.com/v1/images/search"
+  
     onMount(async () => {
         let canvas = document.querySelector('canvas') as HTMLCanvasElement;
         let img = await fetchAndProcessImage() as HTMLImageElement;
         let main = new Circles(canvas, img);
-        
         let upload = document.querySelector('.upload') as HTMLDivElement;
         upload.addEventListener('click', () => {
-            handleImageUpload();
+            handleImageUpload(main);
         });
     
 
@@ -61,7 +61,7 @@ function Circle({}: Props) {
     }
 
 
-    async function handleImageUpload() {
+    async function handleImageUpload(main: Circles) {
         //prompt user to upload image
         let input = document.createElement('input');
         input.type = 'file';
@@ -95,7 +95,8 @@ function Circle({}: Props) {
                     const dataURL = canvas.toDataURL();
                     const resultImage = document.createElement('img');
                     resultImage.src = dataURL;
-                    let main = new Circles(canvas, resultImage);
+                    main.disabled = true;
+                    let other = new Circles(canvas, resultImage);
                 }
             }
         });

@@ -130,6 +130,7 @@ export class Circles {
   mouseSignal: Signal<{ x: number; y: number }>;
   mousePos: Accessor<{ x: number; y: number }>;
   animation: Signal<boolean> = createSignal(false);
+  disabled : boolean = false;
 
   constructor(canvas: HTMLCanvasElement, img: HTMLImageElement) {
     let newR = innerWidth > innerHeight ? innerHeight / 2 : innerWidth / 2;
@@ -177,6 +178,7 @@ export class Circles {
     
   }
   async drawAllCircles() {
+    if (this.disabled) return;
     //it is a two dimensional array
     for (let i = 0; i < this.circles.length; i++) {
         await this.circles[i].draw();
@@ -185,13 +187,16 @@ export class Circles {
   }
 
   getWidth() {
+    if (this.disabled) return;
     let newR = innerWidth > innerHeight ? innerHeight / 2 : innerWidth / 2;
     return newR * 2;
   }
 
 
   addEventListeners() {
+    if (this.disabled) return;
     this.canvas.addEventListener("mousemove", (e) => {
+      if (this.disabled) return;
         //the canvas is not in the middle of the screen
         //calculate the distance from canvas left edge to the edge of the screen
         let canvas = this.canvas.getBoundingClientRect();
@@ -208,6 +213,7 @@ export class Circles {
 
     //exact same event listener but for touch events
     this.canvas.addEventListener("touchmove", (e) => {
+      if (this.disabled) return;
         let canvas = this.canvas.getBoundingClientRect();
         let left = canvas.left;
         let top = canvas.top;
@@ -221,6 +227,7 @@ export class Circles {
 
     //on window resize, we need to resize the canvas
     window.addEventListener("resize", () => {
+      if (this.disabled) return;
       let width = this.width();
       this.canvas.width = width ;
       this.canvas.height = width;
@@ -248,10 +255,12 @@ export class Circles {
 
 
   checkHover() {
+    if (this.disabled) return;
     //check if the mouse is hovering over a circle
 
     let animation = false;
     createEffect(async() => {
+      if (this.disabled) return;
         let x = this.mousePos().x;
         let y = this.mousePos().y;;
         if(animation === false) {
@@ -288,13 +297,14 @@ export class Circles {
   }
 
 
-  
+
 
  
 
 
 
   async animateCircleSplit(circle: Circle, ctx: CanvasRenderingContext2D) {
+    if (this.disabled) return;
     //min radius is 0.1
 
     if (circle.radius <= 0.002) {
