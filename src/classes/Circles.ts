@@ -397,4 +397,131 @@ export class Circles {
 
 
   }
+
+  exportCirclesData(filename: string = 'circles-data.json') {
+    if (this.disabled) return;
+    
+    // Helper function to convert normalized coords (-1 to 1) to grid coords (0 to 250)
+    const normalizedToGrid = (normalizedCoord: number): number => {
+      return Math.round((normalizedCoord + 1) * 125); // -1 becomes 0, 1 becomes 250
+    };
+    
+    // Helper function for precise grid coordinates (preserves decimal precision)
+    const normalizedToGridPrecise = (normalizedCoord: number): number => {
+      return (normalizedCoord + 1) * 125; // Exact conversion without rounding
+    };
+    
+    // Helper function to convert normalized radius to grid radius (ensuring minimum of 1)
+    const normalizedRadiusToGrid = (normalizedRadius: number): number => {
+      return Math.max(1, Math.round(normalizedRadius * 125)); // Ensure minimum radius of 1
+    };
+    
+    // Helper function for precise radius conversion
+    const normalizedRadiusToGridPrecise = (normalizedRadius: number): number => {
+      return normalizedRadius * 125; // Exact conversion
+    };
+    
+    // Create exportable data structure
+    const exportData = {
+      timestamp: new Date().toISOString(),
+      canvasSize: {
+        width: this.canvas.width,
+        height: this.canvas.height,
+        virtualSize: { min: -1, max: 1 }, // Document the virtual coordinate system
+        gridSize: { width: 250, height: 250 } // Document the export grid system
+      },
+      circleCount: this.circles.length,
+      minRadius: 0.004, // Document the minimum radius limit
+      coordinateSystem: "Grid-based: (0,0) = top-left, max = (250,250)",
+      circles: this.circles.map(circle => ({
+        // Original normalized coordinates (for reference)
+        normalized: {
+          x: circle.x,
+          y: circle.y,
+          radius: circle.radius
+        },
+        // Converted grid coordinates
+        grid: {
+          x: normalizedToGrid(circle.x),
+          y: normalizedToGrid(circle.y),
+          radius: normalizedRadiusToGrid(circle.radius)
+        },
+        // Precise grid coordinates (preserves all resolution)
+        gridPrecise: {
+          x: normalizedToGridPrecise(circle.x),
+          y: normalizedToGridPrecise(circle.y),
+          radius: normalizedRadiusToGridPrecise(circle.radius)
+        },
+        color: {
+          r: circle.color.r,
+          g: circle.color.g,
+          b: circle.color.b,
+          a: circle.color.a
+        },
+        coolDown: circle.coolDown
+      }))
+    };
+
+    // Create and download the file
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    console.log(`Exported ${this.circles.length} circles to ${filename}`);
+    return exportData;
+  }
+
+  // Optional: Import function to restore circles from saved data
+  importCirclesData(data: any) {
+    if (this.disabled) return;
+    
+    try {
+      // Clear existing circles
+      this.circles = [];
+      
+      // Recreate circles from data
+      data.circles.forEach((circleData: any) => {
+        const color = new Color(
+          circleData.color.r,
+          circleData.color.g,
+          circleData.color.b,
+          circleData.color.a
+        );
+        
+        const circle = new Circle(
+          circleData.x,
+          circleData.y,
+          circleData.radius,
+          color,
+          this.ctx!,
+          this.pictureCanvas.getContext("2d", { willReadFrequently: true })!
+        );
+        
+        circle.coolDown = circleData.coolDown;
+        this.circles.push(circle);
+      });
+      
+      // Redraw all circles
+      this.drawAllCircles();
+      console.log(`Imported ${this.circles.length} circles`);
+      
+    } catch (error) {
+      console.error('Error importing circles data:', error);
+    }
+  }
+}
+
+// Add type declaration for window.circles
+declare global {
+  interface Window {
+    circles: Circle[];
+  }
 }

@@ -8,19 +8,45 @@ type Props = {}
 
 function Circle({}: Props) {
     
-
+    let circlesInstance: Circles | null = null;
   
     onMount(async () => {
         let canvas = document.querySelector('canvas') as HTMLCanvasElement;
         let img = await fetchAndProcessImage() as HTMLImageElement;
-        let main = new Circles(canvas, img);
+        circlesInstance = new Circles(canvas, img);
+        
+        // Setup event listeners after circlesInstance is created
+        setupEventListeners();
+    });
+
+    function setupEventListeners() {
         let upload = document.querySelector('.upload') as HTMLDivElement;
         upload.addEventListener('click', () => {
-            handleImageUpload(main);
+            handleImageUpload(circlesInstance!);
         });
-    
 
-    });
+        // Add export button functionality with proper error handling
+        let exportBtn = document.querySelector('.export') as HTMLDivElement;
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                console.log('Export button clicked, circlesInstance:', circlesInstance);
+                if (circlesInstance) {
+                    console.log('About to export, circles count:', circlesInstance.circles.length);
+                    try {
+                        circlesInstance.exportCirclesData(`circles-export-${Date.now()}.json`);
+                        console.log('Export completed successfully');
+                    } catch (error) {
+                        console.error('Export failed:', error);
+                    }
+                } else {
+                    console.error('Circles instance is null');
+                }
+            });
+            console.log('Export button event listener added');
+        } else {
+            console.error('Export button not found');
+        }
+    }
 
     async function fetchAndProcessImage() {
         //`https://api.allorigins.win/get?url=${encodeURIComponent('https://api.thecatapi.com/v1/images/search')}`
@@ -41,6 +67,7 @@ function Circle({}: Props) {
     
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Could not get canvas context');
         canvas.width = 4000;
         canvas.height = 4000;
     
@@ -76,6 +103,7 @@ function Circle({}: Props) {
         //turn the image into an image element
 
         input.addEventListener('change', async () => {
+            if (!input.files || input.files.length === 0) return;
             let file = input.files[0];
             let reader = new FileReader();
             reader.readAsDataURL(file);
@@ -85,6 +113,7 @@ function Circle({}: Props) {
                 img.onload = () => {
                     let canvas = document.querySelector('canvas') as HTMLCanvasElement;
                     let ctx = canvas.getContext('2d');
+                    if (!ctx) return;
                     canvas.width = 500;
                     canvas.height = 500;
                     let startX, startY, sideLength;
@@ -102,7 +131,7 @@ function Circle({}: Props) {
                     const resultImage = document.createElement('img');
                     resultImage.src = dataURL;
                     main.disabled = true;
-                    let other = new Circles(canvas, resultImage);
+                    circlesInstance = new Circles(canvas, resultImage);
                 }
             }
         });
@@ -117,8 +146,13 @@ function Circle({}: Props) {
 
   return (
     <div class='dots'>
-        <div class="upload">
-            Upload
+        <div class="controls">
+            <div class="upload">
+                Upload
+            </div>
+            <div class="export">
+                Export
+            </div>
         </div>
         <canvas>
         

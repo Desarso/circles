@@ -28,6 +28,40 @@ body,
   border-radius: 5px;
 }
 
+.controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.controls .upload,
+.controls .export {
+  position: static;
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  cursor: pointer;
+  background-color: rgb(26, 175, 175);
+  padding: 5px 10px;
+  border: 1px solid rgb(26, 175, 175);
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.controls .export {
+  background-color: rgb(175, 26, 26);
+  border-color: rgb(175, 26, 26);
+}
+
+.controls .upload:hover {
+  background-color: rgb(20, 140, 140);
+}
+
+.controls .export:hover {
+  background-color: rgb(140, 20, 20);
+}
+
 .circle {
   transition-duration: 200ms;
 }
